@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node src/app.js",
+    "lint": "npx eslint src/*.js"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "compression": "~1.7.4",
     "cookie-parser": "~1.4.4",
     "dotenv": "^8.2.0",
@@ -18,5 +20,13 @@
     "morgan": "~1.9.1",
     "uuid": "^3.3.3",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
   }
 }

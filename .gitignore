@@ -1,4 +1,5 @@
 .DS_Store
 *.log
 *.key
-
+.env
+node_modules

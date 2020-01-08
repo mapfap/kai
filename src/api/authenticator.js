@@ -9,9 +9,9 @@ const authenticate = (req, res, next) => {
     const token = req.get('Authorization').replace(/Bearer\s/g, '')
     const decoded = jwt.verify(token, privateKey, { algorithms: ['HS512'] })
     req.userId = decoded.id
-    return next()
+    next()
   } catch(err) {
-    return res.status(401).json(err.message)
+    res.status(401).json({ message: err.message })
   }
 }
 

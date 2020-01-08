@@ -1,89 +1,63 @@
-const mongo = require('mongodb');
+const mongo = require('mongodb')
 const MongoClient = mongo.MongoClient
 
 const uri = process.env.MONGO
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-let isConnected = false
-
-client.connect(err => {
-  if (err) { 
-    console.log(err)
-    process.exit(-1)
-  }
-
-  isConnected = true
-  console.log(`[sys] Connected to MongoDB`)
+const client = new MongoClient(uri, {
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 1000
 })
 
-const getUsersPromise = () => {
+let currentDb
+
+module.exports.connect = () => {
   return new Promise((resolve, reject) => {
-    client.db("kai").collection("users").find({}).toArray(function(err, docs) {
+    client.connect(err => {
+      if (err) reject(err)
+      currentDb = client.db('kai')
+      resolve('Connected to MongoDB')
+    })
+  })
+}
+
+const find = (collection, query) => {
+  return new Promise((resolve, reject) => {
+    currentDb.collection(collection).find(query).toArray((err, docs) => {
       err ? reject(err) : resolve(docs)
     })
   })
 }
 
-const getUserByIdPromise = (id) => {
+const findOne = (collection, query) =>  {
   return new Promise((resolve, reject) => {
-    client.db("kai").collection("users").find({_id: id}).toArray(function(err, docs) {
+    find(collection, query).then(
+      docs => resolve(docs[0])
+    ).catch(
+      err => reject(err)
+    )
+  })
+}
+
+module.exports.getProducts = () => find('products', {})
+module.exports.getUsers = () => find('users', {})
+
+module.exports.getUserById = (id) => findOne('users', { _id: mongo.ObjectID(id) })
+
+module.exports.getUserByUsername = (username) => findOne('users', { username: username })
+
+module.exports.updateUser = (id, user) => {
+  return new Promise((resolve, reject) => {
+    currentDb.collection('users').updateOne({ id : id }, { $set: user }, (err, docs) => {
       err ? reject(err) : resolve(docs)
     })
   })
 }
 
-const getUserByUsernamePromise = (username) => {
+module.exports.createUser = (user) => {
   return new Promise((resolve, reject) => {
-    client.db("kai").collection("users").find({username: username}).toArray(function(err, docs) {
+    currentDb.collection('users').insertMany([user], (err, docs) => {
       err ? reject(err) : resolve(docs)
     })
   })
 }
 
-const createUserPromise = (user) => {
-  return new Promise((resolve, reject) => {
-    client.db("kai").collection("users").insertMany([user], function(err, docs) {
-      err ? reject(err) : resolve(docs)
-    })
-  })
-}
-
-const updateUserPromise = (id, user) => {
-  return new Promise((resolve, reject) => {
-    client.db("test").collection("users")
-    .updateOne({ id : id }, { $set: user }, function(err, docs) {
-      err ? reject(err) : resolve(docs)
-    })
-  })
-}
-
-const getUsers = async () => {
-  assertDBConnection()
-  return await getUsersPromise()
-}
-
-const getUserById = async (id) => {
-  id = new mongo.ObjectID(id);
-  assertDBConnection()
-  return await getUserByIdPromise(id)
-}
-
-const getUserByUsername = async (username) => {
-  assertDBConnection()
-  return await getUserByUsernamePromise(username)
-}
-
-const updateUser = async () => {
-  assertDBConnection()
-  return await updateUserPromise()
-}
-
-const createUser = async (user) => {
-  assertDBConnection()
-  return await createUserPromise(user)
-}
-
-const assertDBConnection = () => {
-  if (!isConnected) throw new Error('DB is net connected')
-}
-
-module.exports = { getUsers, getUserById, getUserByUsername, createUser, updateUser }
+module.exports.getDb = () => currentDb
