@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const fs = require('fs')
-const privateKey = fs.readFileSync('kai')
+const privateKey = fs.readFileSync(process.env.KEY_PATH)
 const db = require('../../config/db')
 const logger = require('../../config/logger')
 

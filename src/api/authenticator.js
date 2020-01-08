@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const fs = require('fs')
-const privateKey = fs.readFileSync('kai')
+const privateKey = fs.readFileSync(process.env.KEY_PATH)
 const logger = require('../config/logger')
 
 const authenticate = (req, res, next) => {
