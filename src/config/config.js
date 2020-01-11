@@ -1,5 +1,6 @@
 require('dotenv').config()
 const logger = require('./logger')
+const fs = require('fs')
 
 const config = {
 	express: {
@@ -12,8 +13,7 @@ const config = {
 	jwt: {
 		algorithm: process.env.APP_JWT_ALG || 'HS512',
 		expiresIn: process.env.APP_JWT_LIFE || '1d',
-		// TODO: Figure out how to load this synchronously
-		privateKey: 'TODO: ..'
+		privateKey: fs.readFileSync(process.env.APP_JWT_KEYPATH)
 	},
 	mongo: {
 		uri: process.env.APP_MONGO_URI
