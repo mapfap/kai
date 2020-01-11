@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const express = require('express')
 const http = require('http')
 const compression = require('compression')
@@ -7,6 +5,9 @@ const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const uuidv4 = require('uuid/v4')
+
+require('dotenv').config()
+const config = require('./config/config')
 const logger = require('./config/logger')
 const routes = require('./config/routes')
 const db = require('./config/db')
@@ -37,7 +38,7 @@ const server = http.createServer(app)
 
 db.connect().then(result => {
   logger.info(result)
-  server.listen(process.env.PORT || '3000', () => {
+  server.listen(config.express.port, () => {
     const address = server.address()
     logger.info(`Listening on ${address.address}${address.port}`)
   })

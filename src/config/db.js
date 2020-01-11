@@ -1,8 +1,8 @@
 const mongo = require('mongodb')
 const MongoClient = mongo.MongoClient
+const config = require('./config')
 
-const uri = process.env.MONGO
-const client = new MongoClient(uri, {
+const client = new MongoClient(config.mongo.uri, {
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 1000
 })

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node src/app.js",
-    "lint": "npx eslint src/*.js"
+    "lint": "npx eslint src/*.js",
+    "lint:fix": "npx eslint src/*.js --fix"
   },
   "dependencies": {
     "bcrypt": "^3.0.7",
