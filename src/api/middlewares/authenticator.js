@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
-const logger = require('../config/logger')
-const config = require('../config/config')
+const logger = require('../../config/logger')
+const config = require('../../config/config')
 const privateKey = config.jwt.privateKey
 
 const authenticate = (req, res, next) => {
